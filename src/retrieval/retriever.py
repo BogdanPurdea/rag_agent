@@ -1,21 +1,8 @@
 from .doc_loader import load_documents
 from .doc_splitter import split_documents
 from .vectorstore_setup import setup_vectorstore
+from src.helpers.utils import load_json_config
 import json
-
-def load_config(config_path):
-    """
-    Load configuration from a JSON file.
-
-    Args:
-        config_path (str): Path to the configuration file.
-
-    Returns:
-        dict: Loaded configuration data.
-    """
-    with open(config_path, "r") as config_file:
-        config = json.load(config_file)
-    return config
 
 def create_retriever(config_path):
     """
@@ -26,7 +13,7 @@ def create_retriever(config_path):
     """
     try:
         # Load URLs from config file
-        config = load_config(config_path)
+        config = load_json_config(config_path)
         urls = config.get("urls", [])
         
         # Load documents

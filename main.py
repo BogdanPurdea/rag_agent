@@ -4,7 +4,6 @@ from src.retrieval.retriever import create_retriever
 import os
 
 def main():
-    print("---INITIALIZE RETRIEVER---")
     try:
         
         # Initialize the retriever
