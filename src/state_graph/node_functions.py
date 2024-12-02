@@ -1,17 +1,15 @@
 # node_functions.py
 from typing import Dict
-from langchain.schema import Document
-from retrieval.retriever import create_retriever
-from langchain_core.messages import HumanMessage, SystemMessage
-from helpers.utils import format_docs
-import json
+from src.retrieval.retriever import retrieve_documents
+from src.retrieval.retrieval_grader import doc_grade
+from src.answer_generation.generator import generate_answer
+from src.web_search.web_search_tool import web_search
 
 def retrieve(state: Dict):
     """Retrieve documents from vectorstore"""
     print("---RETRIEVE---")
     question = state["question"]
-    retriever = create_retriever()
-    documents = retriever.invoke(question)
+    documents = retrieve_documents("./config/data_config.json", question)
     return {"documents": documents}
 
 def generate(state: Dict):
@@ -20,9 +18,7 @@ def generate(state: Dict):
     question = state["question"]
     documents = state["documents"]
     loop_step = state.get("loop_step", 0)
-    docs_txt = format_docs(documents)
-    rag_prompt_formatted = rag_prompt.format(context=docs_txt, question=question)
-    generation = llm.invoke([HumanMessage(content=rag_prompt_formatted)])
+    generation = generate_answer(documents, question)
     return {"generation": generation, "loop_step": loop_step + 1}
 
 def grade_documents(state: Dict):
@@ -30,16 +26,7 @@ def grade_documents(state: Dict):
     print("---CHECK DOCUMENT RELEVANCE TO QUESTION---")
     question = state["question"]
     documents = state["documents"]
-    filtered_docs = []
-    web_search = "No"
-    for d in documents:
-        doc_grader_prompt_formatted = doc_grader_prompt.format(document=d.page_content, question=question)
-        result = llm_json_mode.invoke([SystemMessage(content=doc_grader_instructions)] + [HumanMessage(content=doc_grader_prompt_formatted)])
-        grade = json.loads(result.content)["binary_score"]
-        if grade.lower() == "yes":
-            filtered_docs.append(d)
-        else:
-            web_search = "Yes"
+    filtered_docs, web_search = doc_grade(question, documents)
     return {"documents": filtered_docs, "web_search": web_search}
 
 def web_search(state: Dict):
@@ -47,8 +34,6 @@ def web_search(state: Dict):
     print("---WEB SEARCH---")
     question = state["question"]
     documents = state.get("documents", [])
-    docs = web_search_tool.invoke({"query": question})
-    web_results = "\n".join([d["content"] for d in docs])
-    web_results = Document(page_content=web_results)
+    web_results = web_search(question)
     documents.append(web_results)
     return {"documents": documents}

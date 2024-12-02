@@ -48,3 +48,7 @@ def create_retriever(config_path):
         raise ValueError(f"Error parsing config file '{config_path}'. Ensure it is valid JSON.")
     except Exception as e:
         raise RuntimeError(f"An unexpected error occurred: {e}")
+
+def retrieve_documents(config_path, question):
+    retriever = create_retriever("./config/data_config.json")
+    return retriever.invoke(question)

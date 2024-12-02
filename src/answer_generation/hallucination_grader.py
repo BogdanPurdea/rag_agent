@@ -1,4 +1,7 @@
-from src.helpers.utils import load_yaml_config
+from src.helpers.utils import format_docs, load_yaml_config
+from src.nlp_models.local_llama_model import get_llm_json_mode
+from langchain_core.messages import HumanMessage, SystemMessage
+import json
 
 def get_hallucination_grading_config(key):
     """Fetch a specific key's value from the 'retrieval_grading' section in the configuration."""
@@ -6,29 +9,13 @@ def get_hallucination_grading_config(key):
     return config.get('hallucination_grading', {}).get(key, "")
 
 def hallucination_grader_instructions():
-    # return get_hallucination_grading_config('hallucination_grader_instructions')
-    return """You are a teacher grading a quiz. 
-
-        You will be given FACTS and a STUDENT ANSWER. 
-
-        Here is the grade criteria to follow:
-
-        (1) Ensure the STUDENT ANSWER is grounded in the FACTS. 
-
-        (2) Ensure the STUDENT ANSWER does not contain "hallucinated" information outside the scope of the FACTS.
-
-        Score:
-
-        A score of yes means that the student's answer meets all of the criteria. This is the highest (best) score. 
-
-        A score of no means that the student's answer does not meet all of the criteria. This is the lowest possible score you can give.
-
-        Explain your reasoning in a step-by-step manner to ensure your reasoning and conclusion are correct. 
-
-        Avoid simply stating the correct answer at the outset."""
-
+    return get_hallucination_grading_config('hallucination_grader_instructions')
 
 def hallucination_grader_prompt ():
-    # return get_hallucination_grading_config('hallucination_grader_prompt ')
-    return  """FACTS: \n\n {documents} \n\n STUDENT ANSWER: {generation}. 
-        Return JSON with two two keys, binary_score is 'yes' or 'no' score to indicate whether the STUDENT ANSWER is grounded in the FACTS. And a key, explanation, that contains an explanation of the score."""
+    return get_hallucination_grading_config('hallucination_grader_prompt')
+
+def hallucination_grader(documents, generation):
+    hallucination_grader_prompt_formatted = hallucination_grader_prompt().format(documents=format_docs(documents), generation=generation.content)
+    result = get_llm_json_mode().invoke([SystemMessage(content=hallucination_grader_instructions())] + [HumanMessage(content=hallucination_grader_prompt_formatted)])
+    grade = json.loads(result.content)["binary_score"]
+    return grade

@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import yaml
 
@@ -31,3 +32,8 @@ def load_json_config(config_path):
 
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
+
+def current_date():
+    current_date = datetime.now()
+    formatted_date = current_date.strftime("%d %B %Y")
+    return formatted_date

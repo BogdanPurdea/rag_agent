@@ -1,7 +1,7 @@
 from langchain_ollama import ChatOllama
 
 # Configuration: You can store your model info here
-LOCAL_LLM = "llama3.2:3b-instruct-fp16"
+LOCAL_LLM = "llama3.2:1b-instruct-fp16"
 
 def get_llm(model=LOCAL_LLM, temperature=0):
     """
