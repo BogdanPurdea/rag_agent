@@ -9,7 +9,7 @@ def retrieve(state: Dict):
     """Retrieve documents from vectorstore"""
     print("---RETRIEVE---")
     question = state["question"]
-    documents = retrieve_documents("./config/data_config.json", question)
+    documents = retrieve_documents(question, "./config/data_config.json")
     return {"documents": documents}
 
 def generate(state: Dict):

@@ -2,7 +2,7 @@ from langchain_community.vectorstores import SKLearnVectorStore
 from langchain_ollama import OllamaEmbeddings
 import os
 
-def create_vectorstore(doc_splits, model_name="nomic-embed-text", persist_path="./data/vectorstore.pkl"):
+def create_vectorstore(doc_splits, model_name, persist_path):
     """
     Creates a new vector store from split documents and saves it locally.
 
@@ -30,7 +30,7 @@ def create_vectorstore(doc_splits, model_name="nomic-embed-text", persist_path="
     
     return vectorstore
 
-def load_vectorstore(model_name="nomic-embed-text", persist_path="./data/vectorstore.pkl"):
+def load_vectorstore(model_name, persist_path):
     """
     Loads an existing vectorstore from a local file.
 
@@ -52,7 +52,7 @@ def load_vectorstore(model_name="nomic-embed-text", persist_path="./data/vectors
     
     return vectorstore
 
-def setup_vectorstore(doc_splits, model_name="nomic-embed-text", persist_path="./data/vectorstore.pkl"):
+def setup_vectorstore(doc_splits, model_name, persist_path):
     """
     Conditionally creates or loads a vectorstore based on existing data.
 

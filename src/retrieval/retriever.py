@@ -14,6 +14,8 @@ def create_retriever(config_path):
     try:
         # Load URLs from config file
         config = load_json_config(config_path)
+        persist_path = config.get("vectorstore",{}).get("persist_path", "./data/vectorstore.json")
+        model_name = config.get("vectorstore",{}).get("embedding_model", "nomic-embed-text")
         urls = config.get("urls", [])
         
         # Load documents
@@ -30,7 +32,7 @@ def create_retriever(config_path):
 
         # Setup vector store
         try:
-            vectorstore = setup_vectorstore(doc_splits)
+            vectorstore = setup_vectorstore(doc_splits, model_name, persist_path)
         except Exception as e:
             raise RuntimeError(f"Error setting up vector store: {e}")
 
@@ -49,6 +51,6 @@ def create_retriever(config_path):
     except Exception as e:
         raise RuntimeError(f"An unexpected error occurred: {e}")
 
-def retrieve_documents(config_path, question):
-    retriever = create_retriever("./config/data_config.json")
+def retrieve_documents(question, config_path="./config/data_config.json"):
+    retriever = create_retriever(config_path)
     return retriever.invoke(question)

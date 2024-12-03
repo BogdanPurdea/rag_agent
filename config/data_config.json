@@ -1,4 +1,8 @@
 {
+    "vectorstore": {
+        "persist_path": "./data/vectorstore.json",
+        "embedding_model": "nomic-embed-text"
+    },
     "urls": [
         "https://lilianweng.github.io/posts/2023-06-23-agent/",
         "https://lilianweng.github.io/posts/2023-03-15-prompt-engineering/",
