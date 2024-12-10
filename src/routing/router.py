@@ -27,7 +27,7 @@ def extract_descriptions(obj):
 def get_data_description():
     config = load_json_config("./config/data_config.json")
     all_descriptions = extract_descriptions(config)
-    return " ".join(description for description in all_descriptions if description)
+    return ", ".join(description for description in all_descriptions if description)
 
 
 def route_to_vectorstore_or_websearch(question):
