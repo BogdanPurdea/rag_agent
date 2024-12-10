@@ -1,0 +1,11 @@
+{
+    "local_based": {
+        "llama3.2:1b": {
+            "model_name": "llama3.2:1b-instruct-fp16",
+            "cutoff_date": "December 2023"
+        }
+    },
+    "api_based": {
+
+    }
+}
