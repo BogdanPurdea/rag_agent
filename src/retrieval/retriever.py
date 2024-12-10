@@ -4,6 +4,19 @@ from .vectorstore_setup import setup_vectorstore
 from src.helpers.utils import load_json_config
 import json
 
+def extract_urls(obj):
+    urls = []
+    if isinstance(obj, dict):
+        for key, value in obj.items():
+            if key == "urls" and isinstance(value, list):
+                urls.extend(value)
+            else:
+                urls.extend(extract_urls(value))
+    elif isinstance(obj, list):
+        for item in obj:
+            urls.extend(extract_urls(item))
+    return urls
+
 def create_retriever(config_path):
     """
     Creates and returns a retriever based on the provided URLs.
@@ -14,9 +27,9 @@ def create_retriever(config_path):
     try:
         # Load URLs from config file
         config = load_json_config(config_path)
-        persist_path = config.get("vectorstore",{}).get("persist_path", "./data/vectorstore.json")
-        model_name = config.get("vectorstore",{}).get("embedding_model", "nomic-embed-text")
-        urls = config.get("urls", [])
+        persist_path = config.get("vectorstore", {}).get("persist_path", "./data/vectorstore.json")
+        model_name = config.get("vectorstore", {}).get("embedding_model", "nomic-embed-text")
+        urls = extract_urls(config)
         
         # Load documents
         try:
