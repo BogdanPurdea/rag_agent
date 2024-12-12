@@ -1,11 +1,12 @@
-from src.helpers.utils import load_yaml_config, format_docs
+from src.helpers.formatting import format_docs
+from src.helpers.config_loader import ConfigLoader
 from langchain_core.messages import HumanMessage
 from src.nlp_models.local_llama_model import get_llm
 from src.answer_generation.hallucination_grader import hallucination_grader
 from src.answer_generation.answer_grader import answer_grader
 
 def rag_prompt():
-    config = load_yaml_config("./config/prompt_config.yaml")
+    config = ConfigLoader.load_yaml_config("./config/prompt_config.yaml")
     rag_prompt = config.get('generation', {}).get('rag_prompt', "")
     return rag_prompt
 

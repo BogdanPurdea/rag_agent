@@ -1,7 +1,7 @@
 from .doc_loader import load_documents
 from .doc_splitter import split_documents
 from .vectorstore_setup import setup_vectorstore
-from src.helpers.utils import load_json_config
+from src.helpers.config_loader import ConfigLoader
 import json
 
 def extract_urls(obj):
@@ -26,7 +26,7 @@ def create_retriever(config_path):
     """
     try:
         # Load URLs from config file
-        config = load_json_config(config_path)
+        config = ConfigLoader.load_json_config(config_path)
         persist_path = config.get("vectorstore", {}).get("persist_path", "./data/vectorstore.json")
         model_name = config.get("vectorstore", {}).get("embedding_model", "nomic-embed-text")
         urls = extract_urls(config)

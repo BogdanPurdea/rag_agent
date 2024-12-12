@@ -1,5 +1,5 @@
-from src.helpers.utils import load_json_config, load_yaml_config
-from src.helpers.utils import current_date
+from src.helpers.config_loader import ConfigLoader
+from src.helpers.date_utils import current_date
 from src.nlp_models.local_llama_model import get_llm_json_mode
 from src.nlp_models.local_llama_model import get_lm_cutoff
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -7,7 +7,7 @@ import json
 
 # Load routing instructions from config
 def router_instructions():
-    config = load_yaml_config("./config/prompt_config.yaml")
+    config = ConfigLoader.load_yaml_config("./config/prompt_config.yaml")
     router_instructions = config.get('routing', {}).get('router_instructions', "")
     return router_instructions
 
@@ -25,7 +25,7 @@ def extract_descriptions(obj):
     return descriptions
 
 def get_data_description():
-    config = load_json_config("./config/data_config.json")
+    config = ConfigLoader.load_json_config("./config/data_config.json")
     all_descriptions = extract_descriptions(config)
     return ", ".join(description for description in all_descriptions if description)
 

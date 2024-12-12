@@ -1,9 +1,9 @@
 from langchain_ollama import ChatOllama
-from src.helpers.utils import load_json_config
+from src.helpers.config_loader import ConfigLoader
 # Configuration: You can store your model info here
 LOCAL_LLM = "llama3.2:1b"
 def get_local_lm_config(model=LOCAL_LLM):
-    config = load_json_config("./config/lm_config.json")
+    config = ConfigLoader.load_json_config("./config/lm_config.json")
     return config.get("local_based", {}).get(model, {})
 
 def get_lm_name(model):

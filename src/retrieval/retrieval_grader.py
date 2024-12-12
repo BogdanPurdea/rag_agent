@@ -1,11 +1,11 @@
-from src.helpers.utils import load_yaml_config
+from src.helpers.config_loader import ConfigLoader
 from src.nlp_models.local_llama_model import get_llm_json_mode
 from langchain_core.messages import HumanMessage, SystemMessage
 import json
 
 def get_retrieval_grading_config(key):
     """Fetch a specific key's value from the 'retrieval_grading' section in the configuration."""
-    config = load_yaml_config("./config/prompt_config.yaml")
+    config = ConfigLoader.load_yaml_config("./config/prompt_config.yaml")
     return config.get('retrieval_grading', {}).get(key, "")
 
 def doc_grader_instructions():
