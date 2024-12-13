@@ -1,5 +1,5 @@
 from src.helpers.config_loader import ConfigLoader
-from src.nlp_models.local_llama_model import get_llm_json_mode
+from src.language_models.llm_factory import llm_factory
 from langchain_core.messages import SystemMessage, HumanMessage
 import json
 
@@ -16,6 +16,7 @@ def answer_grader_prompt():
 
 def answer_grader(question, generation):
     answer_grader_prompt_formatted = answer_grader_prompt().format(question=question, generation=generation.content)
-    result = get_llm_json_mode().invoke([SystemMessage(content=answer_grader_instructions())] + [HumanMessage(content=answer_grader_prompt_formatted)])
+    llm_json = llm_factory.get_llm(json_mode=True)
+    result = llm_json.invoke([SystemMessage(content=answer_grader_instructions())] + [HumanMessage(content=answer_grader_prompt_formatted)])
     grade = json.loads(result.content)["binary_score"]
     return grade

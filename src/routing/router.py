@@ -1,6 +1,6 @@
 from src.helpers.config_loader import ConfigLoader
 from src.helpers.date_utils import current_date
-from src.nlp_models.local_llama_model import get_llm_json_mode
+from src.language_models.llm_factory import llm_factory
 from src.nlp_models.local_llama_model import get_lm_cutoff
 from langchain_core.messages import HumanMessage, SystemMessage
 import json
@@ -32,7 +32,8 @@ def get_data_description():
 
 def route_to_vectorstore_or_websearch(question):
     router_instructions_formatted = router_instructions().format(description = get_data_description(), cutoff_date= get_lm_cutoff("llama3.2:1b"), current_date = current_date())
-    route_question = get_llm_json_mode().invoke([SystemMessage(content=router_instructions_formatted)] + [HumanMessage(content=question)])
+    llm_json = llm_factory.get_llm(json_mode=True)
+    route_question = llm_json.invoke([SystemMessage(content=router_instructions_formatted)] + [HumanMessage(content=question)])
     source = json.loads(route_question.content)["datasource"]
     if source == "websearch":
         print("---ROUTE QUESTION TO WEB SEARCH---")

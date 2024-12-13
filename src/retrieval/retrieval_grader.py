@@ -1,5 +1,5 @@
 from src.helpers.config_loader import ConfigLoader
-from src.nlp_models.local_llama_model import get_llm_json_mode
+from src.language_models.llm_factory import llm_factory
 from langchain_core.messages import HumanMessage, SystemMessage
 import json
 
@@ -19,7 +19,8 @@ def doc_grade(question, documents):
     web_search = "No"
     for d in documents:
         doc_grader_prompt_formatted = doc_grader_prompt().format(document=d.page_content, question=question)
-        result = get_llm_json_mode().invoke([SystemMessage(content=doc_grader_instructions())] + [HumanMessage(content=doc_grader_prompt_formatted)])
+        llm_json = llm_factory.get_llm(json_mode=True)
+        result = llm_json.invoke([SystemMessage(content=doc_grader_instructions())] + [HumanMessage(content=doc_grader_prompt_formatted)])
         grade = json.loads(result.content)["binary_score"]
         if grade.lower() == "yes":
             print("---GRADE: DOCUMENT RELEVANT---")

@@ -1,7 +1,7 @@
 from src.helpers.formatting import format_docs
 from src.helpers.config_loader import ConfigLoader
 from langchain_core.messages import HumanMessage
-from src.nlp_models.local_llama_model import get_llm
+from src.language_models.llm_factory import llm_factory
 from src.answer_generation.hallucination_grader import hallucination_grader
 from src.answer_generation.answer_grader import answer_grader
 
@@ -13,7 +13,8 @@ def rag_prompt():
 def generate_answer(documents, question):
     docs_txt = format_docs(documents)
     rag_prompt_formatted = rag_prompt().format(context=docs_txt, question=question)
-    response = get_llm().invoke([HumanMessage(content=rag_prompt_formatted)])
+    llm = llm_factory.get_llm()
+    response = llm.invoke([HumanMessage(content=rag_prompt_formatted)])
     return response
 
 def grade_generation(documents, question, generation, loop_step, max_retries):
