@@ -3,7 +3,7 @@ from src.helpers.config_loader import ConfigLoader
 from langchain_core.messages import HumanMessage
 from src.language_models.llm_factory import llm_factory
 from src.answer_generation.hallucination_grader import hallucination_grader
-from src.answer_generation.answer_grader import answer_grader
+from src.answer_generation.answer_grader import AnswerGrader
 
 def rag_prompt():
     config = ConfigLoader.load_yaml_config("./config/prompt_config.yaml")
@@ -24,7 +24,7 @@ def grade_generation(documents, question, generation, loop_step, max_retries):
         # Check question-answering
         print("---GRADE GENERATION vs QUESTION---")
         # Test using question and generation from above
-        answer_grade = answer_grader(question, generation)
+        answer_grade = AnswerGrader.grade_answer(question, generation)
         if answer_grade == "yes":
             print("---DECISION: GENERATION ADDRESSES QUESTION---")
             return "useful"

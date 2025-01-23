@@ -4,6 +4,9 @@ import os
 from rich import print
 from dotenv import load_dotenv
 
+def print_graph(graph):
+    print(graph.get_graph().draw_mermaid())
+    
 def save_graph_as_image(graph):
     # Save the image to a file
     image_path = 'graph_image.png'
@@ -11,6 +14,7 @@ def save_graph_as_image(graph):
     # Open the image
     os.system(f"code {image_path}")
     
+# 
 def main():
     load_dotenv()
     graph = setup_graph()
